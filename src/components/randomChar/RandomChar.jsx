@@ -17,12 +17,7 @@ class RandomChar extends Component {
     marvelService = new MarvelService();
 
     onChatLoaded = (char) => {
-        this.setState({char});
-        // if (char.description.length > 200) {
-        //     this.setState({
-        //         description: description.slice(0, 200) + '...'
-        //     })
-        // }
+        this.setState({char})
     }
 
     updateChar = () => {
