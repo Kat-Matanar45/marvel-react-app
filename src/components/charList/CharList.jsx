@@ -8,7 +8,8 @@ import './charList.scss';
 class CharList extends Component {
     state = {
         char: [],
-        loading: true
+        loading: true,
+        activeId: null
     }
 
     marvelService = new MarvelService();
@@ -30,12 +31,18 @@ class CharList extends Component {
         })
     }
 
+    setActiveId = (id) => {
+        this.setState({ activeId: id });
+    }
+
     render() {
-        const {loading} = this.state;
+        const {loading, activeId} = this.state;
 
         return (
             <div className="char__list">
-                    {loading ? <Spinner/> : <CharListView chars={this.state.char}/>}
+                    {loading ? <Spinner/> : <CharListView chars={this.state.char} 
+                                                            activeId={activeId} 
+                                                            setActiveId={this.setActiveId} />}
                 <button className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
@@ -44,14 +51,19 @@ class CharList extends Component {
     }   
 }
 
-const CharListView = ({chars}) => {
+const CharListView = ({chars, activeId, setActiveId}) => {
+
     const elements = chars.map((item) => {
 
         const {id, name, thumbnail} = item;
 
         return (
             <Fragment key={id}>
-                <li className="char__item">
+                <li 
+                    className={`char__item ${activeId === id ? 'char__item_selected' : ''}`} 
+                    onMouseEnter={() => setActiveId(id)}
+                    onMouseLeave={() => setActiveId(null)}
+                >  
                     <img src={thumbnail} alt="abyss"/>
                     <div className="char__name">{name}</div>
                 </li>
