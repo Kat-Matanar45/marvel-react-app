@@ -1,14 +1,14 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 
 import MarvelService from '../../services/MarvelService';
+import Spinner from '../spinner/Spinner';
 
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 
 class CharList extends Component {
     state = {
         char: [],
-        count: 0
+        loading: true
     }
 
     marvelService = new MarvelService();
@@ -23,37 +23,51 @@ class CharList extends Component {
             .then(this.onCharLoader)
     }
 
-    updateCount = () => {
-        this.setState({count} = ({
-            count: count + 1
-        }))
-    }
-
     onCharLoader = (char) => {
-        this.setState({char})
-        console.log(char)
+        this.setState({
+            char,
+            loading: false
+        })
     }
 
     render() {
-        console.log(this.state.char)
-        const elements = this.state.char.map(item => {
-
-            const {name, thumbnail} = item;
-            console.log(item)
-    
-            return (
-                <CharItem 
-                    key={() => {this.updateCount}} 
-                    name = {name}
-                    thumbnail = {thumbnail}
-                />
-            )
-        })
+        const {loading} = this.state;
 
         return (
             <div className="char__list">
-                <ul className="char__grid">
-                    {elements}
+                    {loading ? <Spinner/> : <CharListView chars={this.state.char}/>}
+                <button className="button button__main button__long">
+                    <div className="inner">load more</div>
+                </button>
+            </div>
+        )
+    }   
+}
+
+const CharListView = ({chars}) => {
+    const elements = chars.map((item) => {
+
+        const {id, name, thumbnail} = item;
+
+        return (
+            <Fragment key={id}>
+                <li className="char__item">
+                    <img src={thumbnail} alt="abyss"/>
+                    <div className="char__name">{name}</div>
+                </li>
+            </Fragment>
+        )
+    })
+
+    return (
+        <ul className="char__grid">
+            {elements}
+        </ul>
+    )
+}
+
+export default CharList;
+
                     {/* <li className="char__item">
                         <img src={abyss} alt="abyss"/>
                         <div className="char__name">Abyss</div>
@@ -90,23 +104,3 @@ class CharList extends Component {
                         <img src={abyss} alt="abyss"/>
                         <div className="char__name">Abyss</div>
                     </li> */}
-                </ul>
-                <button className="button button__main button__long">
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }   
-}
-
-const CharItem = (name, thumbnail) => {
-
-    return (
-        <li className="char__item">
-            <img src={thumbnail} alt="abyss"/>
-            <div className="char__name">{name}</div>
-        </li>
-    )
-}
-
-export default CharList;

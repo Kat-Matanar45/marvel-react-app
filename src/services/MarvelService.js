@@ -25,6 +25,7 @@ class MarvelService {
     _transformCharacter = (char) => {
         const textDescription = char.description === '' ? "Подробная информация отсутствует" : char.description.length > 200 ? char.description.slice(0, 200) + '...' : char.description;
         return {
+            id: char.id,
             name: char.name,
             description: textDescription,
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
