@@ -2,6 +2,7 @@ import { Component, Fragment } from 'react';
 
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
+import ErrorMessage from '@/components/errorMessage/ErrorMessage'
 
 import './charList.scss';
 
@@ -9,7 +10,8 @@ class CharList extends Component {
     state = {
         char: [],
         loading: true,
-        activeId: null
+        activeId: null,
+        error: false
     }
 
     marvelService = new MarvelService();
@@ -22,6 +24,7 @@ class CharList extends Component {
         this.marvelService
             .getAllCharacters()
             .then(this.onCharLoader)
+            .catch(this.onError)
     }
 
     onCharLoader = (char) => {
@@ -35,14 +38,25 @@ class CharList extends Component {
         this.setState({ activeId: id });
     }
 
+    onError = () => {
+        this.setState({
+            loading: false,
+            error: true
+        })
+    }
+
     render() {
-        const {loading, activeId} = this.state;
+        const {loading, activeId, error} = this.state;
+
+        const errorMessage = error ? <ErrorMessage/> : null;
+        const spinner = loading ? <Spinner/> : null;
+        const content = !(loading || error) ? <CharListView chars={this.state.char} activeId={activeId} setActiveId={this.setActiveId} /> : null;
 
         return (
             <div className="char__list">
-                    {loading ? <Spinner/> : <CharListView chars={this.state.char} 
-                                                            activeId={activeId} 
-                                                            setActiveId={this.setActiveId} />}
+                {spinner}
+                {content}
+                {errorMessage}
                 <button className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
@@ -79,40 +93,3 @@ const CharListView = ({chars, activeId, setActiveId}) => {
 }
 
 export default CharList;
-
-                    {/* <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item char__item_selected">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li>
-                    <li className="char__item">
-                        <img src={abyss} alt="abyss"/>
-                        <div className="char__name">Abyss</div>
-                    </li> */}
