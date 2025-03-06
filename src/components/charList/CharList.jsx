@@ -71,6 +71,11 @@ const CharListView = ({chars, activeId, setActiveId}) => {
 
         const {id, name, thumbnail} = item;
 
+        let imgStyle = {'objectFit' : 'cover'}
+        if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+            imgStyle = {'objectFit' : 'unset'}
+        }
+
         return (
             <Fragment key={id}>
                 <li 
@@ -78,7 +83,7 @@ const CharListView = ({chars, activeId, setActiveId}) => {
                     onMouseEnter={() => setActiveId(id)}
                     onMouseLeave={() => setActiveId(null)}
                 >  
-                    <img src={thumbnail} alt="abyss"/>
+                    <img src={thumbnail} alt={name} style={imgStyle}/>
                     <div className="char__name">{name}</div>
                 </li>
             </Fragment>
