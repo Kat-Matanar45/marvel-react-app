@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -50,7 +50,9 @@ class CharList extends Component {
 
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? <CharListView chars={this.state.char} activeId={activeId} setActiveId={this.setActiveId} /> : null;
+        const content = !(loading || error) 
+                        ? <CharListView chars={this.state.char} activeId={activeId} setActiveId={this.setActiveId} onCharSelected={this.props.onCharSelected}/> 
+                        : null;
 
         return (
             <div className="char__list">
@@ -65,7 +67,7 @@ class CharList extends Component {
     }   
 }
 
-const CharListView = ({chars, activeId, setActiveId}) => {
+const CharListView = ({chars, activeId, setActiveId, onCharSelected}) => {
 
     const elements = chars.map((item) => {
 
@@ -77,16 +79,16 @@ const CharListView = ({chars, activeId, setActiveId}) => {
         }
 
         return (
-            <Fragment key={id}>
                 <li 
+                    key={id}
                     className={`char__item ${activeId === id ? 'char__item_selected' : ''}`} 
                     onMouseEnter={() => setActiveId(id)}
                     onMouseLeave={() => setActiveId(null)}
+                    onClick={() => onCharSelected(id)}
                 >  
                     <img src={thumbnail} alt={name} style={imgStyle}/>
                     <div className="char__name">{name}</div>
                 </li>
-            </Fragment>
         )
     })
 
