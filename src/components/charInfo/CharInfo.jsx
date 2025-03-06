@@ -85,7 +85,7 @@ const View = ({char}) => {
     return(
         <>
             <div className="char__basics">
-                <img src={thumbnail} alt={name}/>
+                <img src={thumbnail} alt={name} style={{objectFit:'unset'}}/>
                 <div>
                     <div className="char__info-name">{name}</div>
                     <div className="char__btns">
@@ -103,6 +103,7 @@ const View = ({char}) => {
             </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
+                {comics.length > 0 ? null : "Информация отсутствует"}
                 {
                     comics.map((item, i) => {
                         if (i<=9) {
