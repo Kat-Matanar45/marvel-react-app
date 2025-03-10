@@ -11,7 +11,10 @@ class CharList extends Component {
         char: [],
         loading: true,
         activeId: null,
-        error: false
+        error: false,
+        newItemLoading: false,
+        offset: 210,
+        charEnded: false
     }
 
     marvelService = new MarvelService();
@@ -20,18 +23,33 @@ class CharList extends Component {
         this.updateAllChar();
     }
 
-    updateAllChar = () => {
+    updateAllChar = (offset) => {
+        this.onCharLoading();
         this.marvelService
-            .getAllCharacters()
+            .getAllCharacters(offset)
             .then(this.onCharLoader)
             .catch(this.onError)
     }
 
-    onCharLoader = (char) => {
+    onCharLoading = () => {
         this.setState({
-            char,
-            loading: false
+            newItemLoading: true
         })
+    }
+
+    onCharLoader = (newCharList) => {
+        let ended = false;
+        if (newCharList.length < 9) {
+            ended = true
+        }
+
+        this.setState(({char, offset}) => ({
+            char: [...char, ...newCharList],
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+            charEnded: ended
+        }))
     }
 
     setActiveId = (id) => {
@@ -46,7 +64,7 @@ class CharList extends Component {
     }
 
     render() {
-        const {loading, activeId, error} = this.state;
+        const {loading, activeId, error, newItemLoading, offset, charEnded} = this.state;
 
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
@@ -59,7 +77,11 @@ class CharList extends Component {
                 {spinner}
                 {content}
                 {errorMessage}
-                <button className="button button__main button__long">
+                <button className="button button__main button__long"
+                        disabled={newItemLoading}
+                        style={{'display': charEnded ? 'none' : 'block'}}
+                        onClick={() => this.updateAllChar(offset)}
+                >
                     <div className="inner">load more</div>
                 </button>
             </div>
