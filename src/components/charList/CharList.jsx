@@ -107,7 +107,10 @@ const CharListView = ({chars, activeId, setActiveId, onCharSelected}) => {
                     className={`char__item ${activeId === id ? 'char__item_selected' : ''}`} 
                     onMouseEnter={() => setActiveId(id)}
                     onMouseLeave={() => setActiveId(null)}
+                    onFocus={() => setActiveId(id)}
+                    onBlur={() => setActiveId(null)} 
                     onClick={() => onCharSelected(id)}
+                    tabIndex='0'
                 >  
                     <img src={thumbnail} alt={name} style={imgStyle}/>
                     <div className="char__name">{name}</div>
