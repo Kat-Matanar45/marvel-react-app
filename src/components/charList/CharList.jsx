@@ -101,6 +101,12 @@ const CharListView = ({chars, activeId, setActiveId, onCharSelected}) => {
             imgStyle = {'objectFit' : 'unset'}
         }
 
+        const handleKeyDown = (event, id) => {
+            if (event.key === "Enter") {
+                onCharSelected(id); 
+            }
+        };
+
         return (
                 <li 
                     key={id}
@@ -110,6 +116,7 @@ const CharListView = ({chars, activeId, setActiveId, onCharSelected}) => {
                     onFocus={() => setActiveId(id)}
                     onBlur={() => setActiveId(null)} 
                     onClick={() => onCharSelected(id)}
+                    onKeyDown={(event) => handleKeyDown(event, id)}
                     tabIndex='0'
                 >  
                     <img src={thumbnail} alt={name} style={imgStyle}/>
