@@ -14,7 +14,7 @@ class CharList extends Component {
         activeId: null,
         error: false,
         newItemLoading: false,
-        offset: 210,
+        offset: 1,
         charEnded: false
     }
 

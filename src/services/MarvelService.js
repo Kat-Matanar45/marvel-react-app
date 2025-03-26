@@ -1,8 +1,8 @@
 
 class MarvelService {
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    _apiBase = 'https://marvel-server-zeta.vercel.app/';
     _apiKey = `apikey=${import.meta.env.VITE_API_KEY}`;
-    _baseOffset = 210;
+    _baseOffset = 1;
 
     getResource = async (url) => {
         let res = await fetch(url);
