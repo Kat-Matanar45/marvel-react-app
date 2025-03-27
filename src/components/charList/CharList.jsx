@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
@@ -7,70 +7,61 @@ import ErrorMessage from '@/components/errorMessage/ErrorMessage'
 
 import './charList.scss';
 
-class CharList extends Component {
-    state = {
-        char: [],
-        loading: true,
-        activeId: null,
-        error: false,
-        newItemLoading: false,
-        offset: 1,
-        charEnded: false
-    }
+const CharList = (props) => {
 
-    marvelService = new MarvelService();
+    const [char, setChar] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [activeId, setActiveId] = useState(null);
+    const [error, setError] = useState(false);
+    const [newItemLoading, setNewItemLoading] = useState(false);
+    const [offset, setOffset] = useState(1);
+    const [charEnded, setCharEnded] = useState(false);
 
-    componentDidMount() {
-        this.updateAllChar();
-    }
+    const marvelService = new MarvelService();
 
-    updateAllChar = (offset) => {
-        this.onCharLoading();
-        this.marvelService
+    useEffect(() => {
+        updateAllChar()
+    }, [] 
+    )
+
+    const updateAllChar = (offset) => {
+        onCharLoading();
+        marvelService
             .getAllCharacters(offset)
-            .then(this.onCharLoader)
-            .catch(this.onError)
+            .then(onCharLoader)
+            .catch(onError)
     }
 
-    onCharLoading = () => {
-        this.setState({
-            newItemLoading: true
-        })
+    const onCharLoading = () => {
+        setNewItemLoading(true)
     }
 
-    onCharLoader = (newCharList) => {
+    const onCharLoader = (newCharList) => {
         let ended = false;
         if (newCharList.length < 9) {
             ended = true
         }
 
-        this.setState(({char, offset}) => ({
-            char: [...char, ...newCharList],
-            loading: false,
-            newItemLoading: false,
-            offset: offset + 9,
-            charEnded: ended
-        }))
+        setChar(char => [...char, ...newCharList]);
+        setLoading(false);
+        setNewItemLoading(false);
+        setOffset(offset => offset + 9);
+        setCharEnded(ended);
     }
 
-    setActiveId = (id) => {
-        this.setState({ activeId: id });
+    const setActiveID = (id) => {
+        setActiveId(id);
     }
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
+    const onError = () => {
+        setLoading(false);
+        setError(true)
     }
-
-    render() {
-        const {loading, activeId, error, newItemLoading, offset, charEnded} = this.state;
 
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
         const content = !(loading || error) 
-                        ? <CharListView chars={this.state.char} activeId={activeId} setActiveId={this.setActiveId} onCharSelected={this.props.onCharSelected}/> 
+                        ? <CharListView chars={char} activeId={activeId} setActiveId={setActiveID} onCharSelected={props.onCharSelected}/> 
                         : null;
 
         return (
@@ -81,13 +72,12 @@ class CharList extends Component {
                 <button className="button button__main button__long"
                         disabled={newItemLoading}
                         style={{'display': charEnded ? 'none' : 'block'}}
-                        onClick={() => this.updateAllChar(offset)}
+                        onClick={() => updateAllChar(offset)}
                 >
                     <div className="inner">load more</div>
                 </button>
             </div>
-        )
-    }   
+        ) 
 }
 
 const CharListView = ({chars, activeId, setActiveId, onCharSelected}) => {
