@@ -3,24 +3,52 @@ import { useEffect, useState } from 'react';
 import './comicsList.scss';
 
 import useMarvelService from '../../services/MarvelService';
+import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
-const ComicsList = () => {
+const ComicsList = (props) => {
     const [comics, setComics] = useState([]);
-    const {loading, error, getAllComics} = useMarvelService();
+    const [offset, setOffset] = useState(1);
+    const [comicsEnded, setComicsEnded] = useState(false);
+    const [newItemLoading, setNewItemLoading] = useState(false);
+
+    const {loading, error, getAllComics} = useMarvelService(); 
 
     useEffect(() => {
-        getAllComics()
-            .then(onComicsLoader)
+        updateAllComics(offset, true)
     }, [])
 
-    const onComicsLoader = (comics) => {
-        setComics(comics)
+    const updateAllComics = (offset, initial) => {
+        initial ? setNewItemLoading(false) : setNewItemLoading(true);
+        getAllComics(offset)
+            .then(onComicsLoader)
     }
+
+    const onComicsLoader = (newListComics) => {
+        let ended = false;
+        if (newListComics.length < 8) {
+            ended = true
+        }
+
+        setComics(comics => [...comics, ...newListComics]);
+        setNewItemLoading(false);
+        setOffset(offset => offset + 8);
+        setComicsEnded(ended);
+    }
+
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading && !newItemLoading ? <Spinner/> : null;
 
     return (
         <div className="comics__list">
+            {spinner}
             <ComicsListView comics={comics}/>
-            <button className="button button__main button__long">
+            {errorMessage}
+            <button className="button button__main button__long"
+                    onClick={() => updateAllComics(offset)}
+                    disabled={newItemLoading}
+                    style={{'display': comicsEnded ? 'none' : 'block'}}
+            >
                 <div className="inner">load more</div>
             </button>
         </div>

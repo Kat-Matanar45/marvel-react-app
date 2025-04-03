@@ -6,7 +6,6 @@ const useMarvelService = () => {
     const _apiBase = 'https://marvel-server-zeta.vercel.app/';
     const _apiKey = `apikey=${import.meta.env.VITE_API_KEY}`;
     const _baseOffset = 1;
-    const _limit = 8;
 
     const getAllCharacters = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
@@ -31,8 +30,8 @@ const useMarvelService = () => {
         }
     }
 
-    const getAllComics = async () => {
-        const res = await request(`${_apiBase}comics?limit=${_limit}&${_apiKey}`);
+    const getAllComics = async (offset = _baseOffset) => {
+        const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&&${_apiKey}`);
         return res.data.results.map(_transformComics)
     }
 
