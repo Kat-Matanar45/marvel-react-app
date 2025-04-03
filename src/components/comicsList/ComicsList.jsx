@@ -24,7 +24,8 @@ const ComicsList = () => {
 
     return (
         <div className="comics__list">
-            <ul className="comics__grid">
+            <ComicsListView comics={comics}/>
+            {/* <ul className="comics__grid">
                 <li className="comics__item">
                     <a href="#">
                         <img src={uw} alt="ultimate war" className="comics__item-img"/>
@@ -81,11 +82,34 @@ const ComicsList = () => {
                         <div className="comics__item-price">NOT AVAILABLE</div>
                     </a>
                 </li>
-            </ul>
+            </ul> */}
             <button className="button button__main button__long">
                 <div className="inner">load more</div>
             </button>
         </div>
+    )
+}
+
+const ComicsListView = ({comics}) => {
+
+    const comicBook = comics.map(item => {
+        const {id, title, price, thumbnail} = item;
+
+        return (
+            <li key={id} className="comics__item">
+                <a href="#">
+                    <img src={thumbnail} alt={title} className="comics__item-img"/>
+                    <div className="comics__item-name">{title}</div>
+                    <div className="comics__item-price">{price}$</div>
+                </a>
+            </li>
+        )
+    })
+
+    return (
+        <ul className="comics__grid">
+            {comicBook}
+        </ul>
     )
 }
 
