@@ -1,47 +1,10 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-
-import useMarvelService from '../../../services/MarvelService';
-import Spinner from '../../spinner/Spinner';
-import ErrorMessage from '../../errorMessage/ErrorMessage';
+import { Link } from 'react-router-dom';
 
 import '../singleComicPage/singleComicPage.scss';
 
-const SingleComicPage = () => {
-    const {comicId} = useParams();
-    const [comic, setComic] = useState(null);
-    const {error, loading, getComic, clearError} = useMarvelService();
+const SingleComicPage = ({data}) => {
 
-    useEffect(() => {
-        updateComic()
-    }, [comicId])
-
-    const updateComic = () => {
-        clearError();
-        
-        getComic(comicId)
-            .then(onComicLoaded)
-    }
-
-    const onComicLoaded = (comic) => {
-        setComic(comic);
-    }
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !comic) ? <View comic={comic}/> : null;
-
-    return (
-        <>
-            {spinner}
-            {errorMessage}
-            {content}
-        </>
-    )
-}
-
-const View = ({comic}) => {
-    const {title, description, pageCount, thumbnail, language, price} = comic;
+    const {title, description, pageCount, thumbnail, language, price} = data;
 
     return (
         <div className="single-comic">
